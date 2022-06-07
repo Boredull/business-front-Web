@@ -16,10 +16,18 @@ export default new VueRouter ({
             meta:{show:true}
         },
         {
-            path:'/search/:keyword',
+            // :keyword占位符，？代表参数可传可不传
+            path:'/search/:keyword?',
             component:Search,
             meta:{show:true},
-            name:'search'
+            name:'search',
+            // 路由组件能不能传递props数据？
+            // 布尔值写法:params
+            // props:true,
+            // 对象写法：额外的给路由组件传递一些props
+            // props:{a:1,b:2}
+            // 函数写法：可以params参数、query参数，通过props传递给路由组件
+            props:($route)=>{({keyword:$route.params.keyword,k:$route.query.k})}
         },
         {
             path:'/login',
