@@ -6,7 +6,8 @@
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
         <div class="sort">
-          <div class="all-sort-list2">
+          <!-- 事件委派 -->
+          <div class="all-sort-list2" @click="goSearch">
             <div
               class="item"
               v-for="(c1, index) in categoryList"
@@ -14,7 +15,11 @@
               :class="{ cur: currentIndex == index }"
             >
               <h3 @mouseenter="changeIndex(index)">
-                <a href="">{{ c1.categoryName }}</a>
+              <a >{{ c1.categoryName }}</a>
+              <!-- 编程式导航，重复太多，点击有回调，可能会多次调用回调，不太好 -->
+                <!-- <a @click="goSearch">{{ c1.categoryName }}</a> -->
+                <!-- 声明式导航会出现卡顿现象 -->
+                <!-- <router-link to="/search">{{c1.categoryName}}</router-link> -->
               </h3>
               <!-- 二级、三级分类 -->
               <div class="item-list clearfix" :style="{display:currentIndex==index?'block':'none'}">
@@ -25,14 +30,18 @@
                 >
                   <dl class="fore">
                     <dt>
-                      <a href="">{{ c2.categoryName }}</a>
+                      <a >{{ c2.categoryName }}</a>
+                      <!-- <a @click="goSearch">{{ c2.categoryName }}</a> -->
+                      <!-- <router-link to="/search">{{c2.categoryName}}</router-link> -->
                     </dt>
                     <dd>
                       <em
                         v-for="(c3, index) in c2.categoryChild"
                         :key="c3.categoryId"
                       >
-                        <a href="">{{ c3.categoryName }}</a>
+                      <a>{{ c3.categoryName }}</a>
+                        <!-- <a @click="goSearch">{{ c3.categoryName }}</a> -->
+                        <!-- <router-link to="/search">{{c3.categoryName}}</router-link> -->
                       </em>
                     </dd>
                   </dl>
@@ -60,7 +69,7 @@
 import { mapState } from "vuex";
 // 引入方式：是把lodash全部功能函数引入
 // import _ from 'lodash';
-// 最好引入，按需加载
+// 最好引入，按需加载，默认暴露，不用加括号
 import throttle from "lodash/throttle";
 
 export default {
@@ -98,6 +107,12 @@ export default {
     leaveIndex() {
       this.currentIndex = -1;
     },
+    // 进行路由跳转的方法
+    goSearch() {
+      // 最好的方法：编程式导航+事件委派
+      // 利用事件委派存在一些问题：1、怎么知道点击一定是a标签 2、如何获取参数【1、2、3级分类的产品的名字、id】
+      this.$router.push('/search')
+    }
   },
 };
 </script>
