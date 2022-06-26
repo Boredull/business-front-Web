@@ -15,7 +15,7 @@
               :class="{ cur: currentIndex == index }"
             >
               <h3 @mouseenter="changeIndex(index)">
-              <a >{{ c1.categoryName }}</a>
+              <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
               <!-- 编程式导航，重复太多，点击有回调，可能会多次调用回调，不太好 -->
                 <!-- <a @click="goSearch">{{ c1.categoryName }}</a> -->
                 <!-- 声明式导航会出现卡顿现象 -->
@@ -30,7 +30,7 @@
                 >
                   <dl class="fore">
                     <dt>
-                      <a >{{ c2.categoryName }}</a>
+                      <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
                       <!-- <a @click="goSearch">{{ c2.categoryName }}</a> -->
                       <!-- <router-link to="/search">{{c2.categoryName}}</router-link> -->
                     </dt>
@@ -39,7 +39,7 @@
                         v-for="(c3, index) in c2.categoryChild"
                         :key="c3.categoryId"
                       >
-                      <a>{{ c3.categoryName }}</a>
+                      <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a> 
                         <!-- <a @click="goSearch">{{ c3.categoryName }}</a> -->
                         <!-- <router-link to="/search">{{c3.categoryName}}</router-link> -->
                       </em>
@@ -108,10 +108,34 @@ export default {
       this.currentIndex = -1;
     },
     // 进行路由跳转的方法
-    goSearch() {
+    goSearch(event) {
       // 最好的方法：编程式导航+事件委派
       // 利用事件委派存在一些问题：1、怎么知道点击一定是a标签 2、如何获取参数【1、2、3级分类的产品的名字、id】
-      this.$router.push('/search')
+      // 第一个问题：把子节点当中的a标签，我加上自定义属性data-categoryName，其余的子节点没有的
+      let element = event.target;
+      // 获取到当前出发这个事件的节点[h3,d,dt,dl]，需要带有data-categoryname这样节点【一定是a标签】
+      // 节点有一个属性dataset属性，可以获取节点的自定义属性与属性值
+      let { categoryname,category1id,category2id,category3id } = element.dataset;
+      // 如果标签身上拥有categoryname一定是a标签
+      if(categoryname) {
+        // 整理路由跳转的参数
+        let location = {name:"search"}
+        let query = { categoryName:categoryname }
+        // 一级分类，二级分类，三级分类的a标签
+        if(category1id){
+          query.category1Id = category1id
+        }else if(category2id){
+          query.category2Id = category2id
+        }else{
+          query.category3Id = category3id
+        }
+        // 整理完参数
+        
+        // 路由跳转
+        location.query = query;
+        this.$router.push(location);
+      }
+      
     }
   },
 };
