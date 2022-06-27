@@ -77,9 +77,15 @@ export default {
       // 使用underfined解决：params参数可以传递、不传递（空的字符串)http://localhost:8080/#/search?k=QWE
       // this.$router.push({name:'search',params:{keyword:''|| undefined },query:{k:this.keyword.toUpperCase()}})
       // 路由组件能不能 传递props数据？
-      // 可以的：三种写法
-      this.$router.push({name:"search",params:{keyword:this.keyword},query:{k:this.keyword.toUpperCase()}})
-      
+      // 可以的：三种写法:布尔值、对象、函数
+      // 下面这种写法可以解决当前这个抛出异常的错误的问题，但是将来我们还是会用到push\replace方法进行路由跳转，还是会出现此类问题，因此我们需要从根解决问题，就是咱们自己重写push|replace方法，push|replace方法，是VueRouter.prototype原型对象提出的
+      // this.$router.push({name:"search",params:{keyword:this.keyword},query:{k:this.keyword.toUpperCase()}})
+      // 代表的是如果有query参数也带过去
+      if(this.$route.query) {
+        let location = {name:"search",params:{ keyword: this.keyword || undefined}};
+        location.query = this.$route.query;
+        this.$router.push(location);
+      }
     }
   }
 };
