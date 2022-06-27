@@ -156,9 +156,14 @@ export default {
         }
         // 整理完参数
 
-        // 路由跳转
-        location.query = query;
-        this.$router.push(location);
+        //判断：如果路由跳转的时候，带有params参数，捎带传递过去
+        if (this.$route.params) {
+          location.params = this.$route.params;
+          // 动态给location配置对象添加query属性
+          location.query = query;
+          // 路由跳转
+          this.$router.push(location);
+        }
       }
     },
     // 当鼠标移入的时候，让商品分类列表进行展示
@@ -302,18 +307,18 @@ export default {
     }
     // 过渡动画的样式
     // 过渡动画的开始状态（进入）
-    .sort-enter{
+    .sort-enter {
       height: 0px;
-      // transform: rotate(0deg); 
+      // transform: rotate(0deg);
     }
     // 过渡动画的结束状态（进入）
     .sort-enter-to {
-      height:461px;
+      height: 461px;
       // transform: rotate(360deg);
     }
     // 定义动画时间、速率
     .sort-enter-active {
-      transition: all .5s linear;
+      transition: all 0.5s linear;
     }
   }
 }
