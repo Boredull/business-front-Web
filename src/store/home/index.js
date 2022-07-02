@@ -12,6 +12,7 @@ const mutations = {
     },
     GETBANNERLIST(state,bannerList) {
         state.bannerList = bannerList;
+        // console.log("修改数据")
     }
 };
 const actions = {
@@ -25,6 +26,7 @@ const actions = {
     },
     // 获取首页轮播图的数据
     async getBannerList({commit}) {
+        // console.log('向服务器发起ajax请求，获取轮播图的数据')
         let result = await reqGetBannerList();
         if(result.code==200){
             commit('GETBANNERLIST',result.data);
