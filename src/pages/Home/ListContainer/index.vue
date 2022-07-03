@@ -3,7 +3,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" id="mySwiper">
+        <div class="swiper-container" ref="mySwiper">
           <div class="swiper-wrapper">
             <div
               class="swiper-slide"
@@ -136,22 +136,24 @@ export default {
         // nextTick：在下次DOM更新 循环结束之后 执行延迟回调。 在 修改数据之后 立即使用这个方法，获取更新后的DOM
         this.$nextTick(() => {
           // 当你执行这个回调的时候：保证服务器数据回来了，v-for执行完毕了【一定轮播图的结构有了】
-        var mySwiper = new Swiper(document.querySelector(".swiper-container"), {
-          loop: true,
-          // 如果需要分页器
-          pagination: {
-            el: ".swiper-pagination",
-            // 点击小球的时候也切换图片
-            clickable: true,
-          },
-          // 如果需要前进后退按钮
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
+          var mySwiper = new Swiper(
+            this.$refs.mySwiper,
+            {
+              loop: true,
+              // 如果需要分页器
+              pagination: {
+                el: ".swiper-pagination",
+                // 点击小球的时候也切换图片
+                clickable: true,
+              },
+              // 如果需要前进后退按钮
+              navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              },
+            }
+          );
         });
-        })
-        
       },
     },
   },
