@@ -160,6 +160,7 @@ import { mapGetters } from 'vuex'
       // this.searchParams.categoryName = this.$route.query.categoryName;
       // this.searchParams.keyword = this.$route.params.keyword;
       // Object.assign:ES6新增的语法，合并对象
+      // 在发请求之前，把接口需要传递参数，进行整理（在给服务器发请求之前，把参数整理好，服务器就会返回查询的数据
       Object.assign(this.searchParams,this.$route.query,this.$route.params);
     },
     // 组件挂载完毕执行一次【仅仅执行一次】
@@ -183,6 +184,21 @@ import { mapGetters } from 'vuex'
       // 把这次请求封装成一个函数，当你需要在调用的时候调用即可
       getData() {
         this.$store.dispatch("getSearchList",this.searchParams)
+      }
+    },
+    // 数据监听：监听组件实例身上的属性的属性值变化
+    watch: {
+      // 监听路由的信息是否发生变化，如果发生变化，再次发起请求
+      $route(newValue,oldValue){
+        // 再次发请求之前整理带给服务器参数
+        Object.assign(this.searchParams,this.$route.query,this.$route.params);
+        // 再次发起ajax请求
+        this.getData();
+        // 每一次请求完毕，应该把相应的1、2、3级分类的id置空的，让他接受下一次的相应1、2、3id
+        // 分类名字与关键字不用清理：因为每一次路由发生变化的时候，都会给他赋予新的数据
+        this.searchParams.category1Id = '';
+        this.searchParams.category2Id = '';
+        this.searchParams.category3Id = '';
       }
     }
   }
