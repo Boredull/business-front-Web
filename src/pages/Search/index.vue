@@ -12,7 +12,10 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
+            <!-- 分类的面包屑 -->
             <li class="with-x" v-if="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeCategoryName">×</i></li>
+            <!-- 关键字的面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">{{searchParams.keyword}}<i @click="removeKeyword">×</i></li>
           </ul>
         </div>
 
@@ -196,6 +199,19 @@ import { mapGetters } from 'vuex'
         // 严谨: 本意是删除query,如果路径当中出现params不应该删除,路由跳转的时候应该带着
         if(this.$route.params) {
           this.$router.push({ name:"search", params: this.$route.params})
+        }
+      },
+      // 删除关键字
+      removeKeyword() {
+        // 给服务器带的参数searchParams参数keyword置空
+        this.searchParams.keyword = undefined;
+        // 再次发请求
+        this.getData();
+        // 通知兄弟组件Header清除关键字
+        this.$bus.$emit("clear");
+        // 进行路由的跳转
+        if(this.$route.query){
+          this.$router.push({name:"search",query:this.$route.query});
         }
       }
     },
