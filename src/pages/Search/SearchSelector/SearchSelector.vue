@@ -3,8 +3,9 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!-- 品牌地方 -->
         <ul class="logo-list">
-          <li v-for="(trademark,index) in trademarkList" :key="trademark.tmId">{{trademark.tmName}}</li>
+          <li v-for="(trademark,index) in trademarkList" :key="trademark.tmId" @click="tradeMarkHandler(trademark)">{{trademark.tmName}}</li>
         </ul>
       </div>
       <div class="ext">
@@ -32,6 +33,16 @@ import {mapGetters} from 'vuex'
     name: 'SearchSelector',
     computed:{
       ...mapGetters(['trademarkList',"attrsList"])
+    },
+    methods:{
+      // 品牌的事件处理函数
+      tradeMarkHandler(trademark){
+        // 点击了品牌（苹果），还是需要整理参数，像服务器发请求获取相应的数据进行展示
+        // 老师问题：在那个组件发请求，父组件
+        // 为什么，因为父组件中searchParams参数是带给服务器参数，子组件组件把你点击的品牌的信息，需要给父组件传递过去------自定义事件
+        this.$emit('trademarkInfo',trademark);
+      },
+
     }
   }
 </script>
