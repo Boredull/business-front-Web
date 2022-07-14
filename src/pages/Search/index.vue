@@ -30,25 +30,20 @@
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
-              <!-- 价格结构 -->
+              <!-- 价格排序结构 -->
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active: isOne}">
+                  <a>综合
+                    <span v-if="isOne" v-show=" isAsc">⬆</span>
+                    <span v-if="isOne" v-show=" isDesc">⬇</span>
+                  </a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active: isTwo}">
+                  <a>价格
+                    <span v-if="isTwo" v-show=" isAsc">⬆</span>
+                    <span v-if="isTwo" v-show=" isDesc">⬇</span>
+                    </a>
+                    
                 </li>
               </ul>
             </div>
@@ -142,8 +137,8 @@ import { mapGetters } from 'vuex'
           categoryName:"",
           // 关键字
           keyword:"",
-          // 排序
-          order:"",
+          // 排序:初始状态应该是综合|降序
+          order:"1:desc",
           // 分页器用的：代表的是当前是第几页
           pageNo:1,
           // 代表的是每一个展示数据个数
@@ -181,7 +176,19 @@ import { mapGetters } from 'vuex'
     // }
     computed:{
       // mapGetters里面的写法：传递的数组，因为getters计算是没有划分模块[home,search]
-      ...mapGetters(['goodsList'])
+      ...mapGetters(['goodsList']),
+      isOne () {
+        return this.searchParams.order.indexOf('1') != -1
+      },
+      isTwo () {
+        return this.searchParams.order.indexOf('2') != -1
+      },
+      isAsc() {
+        return this.searchParams.order.indexOf('asc') != -1
+      },
+      isDesc() {
+        return this.searchParams.order.indexOf('desc') != -1
+      }
     },
     methods: {
       // 向服务器发请求获取search模块数据(根据参数不同返回不同的数据展示)
