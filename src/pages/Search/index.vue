@@ -32,13 +32,13 @@
             <div class="navbar-inner filter">
               <!-- 价格排序结构 -->
               <ul class="sui-nav">
-                <li :class="{active: isOne}">
+                <li :class="{active: isOne}" @click="changeOrder('1')">
                   <a>综合
                     <span v-if="isOne" v-show=" isAsc">⬆</span>
                     <span v-if="isOne" v-show=" isDesc">⬇</span>
                   </a>
                 </li>
-                <li :class="{active: isTwo}">
+                <li :class="{active: isTwo}" @click="changeOrder('2')">
                   <a>价格
                     <span v-if="isTwo" v-show=" isAsc">⬆</span>
                     <span v-if="isTwo" v-show=" isDesc">⬇</span>
@@ -255,6 +255,27 @@ import { mapGetters } from 'vuex'
       removeAttr(index){
         // 再次整理参数
         this.searchParams.props.splice(index,1);
+        // 再次发请求
+        this.getData();
+      },
+      // 排序的操作
+      changeOrder(flag) {
+        // flag形参：它是一个标记，代表用户点击的是综合（1）价格（2）[用户点击的时候传递进来]
+        // let originOrder = this.searchParams.order;
+        // 这里获取到的是最开始的状态
+        let originFlag = this.searchParams.order.split(":")[0];
+        let originSort = this.searchParams.order.split(":")[1];
+        // 准备一个新的order属性值
+        let newOrder = '';
+        // 这个语句我能确定点击的一定是综合
+        if(flag == originFlag) {
+          newOrder = `${originFlag}:${originSort =="desc"?"asc":"desc"}`
+        }else{
+          // 点击的是价格
+          newOrder = `${flag}:${'desc'}`
+        }
+        // 将新的order赋予searchParams
+        this.searchParams.order = newOrder;
         // 再次发请求
         this.getData();
       }
