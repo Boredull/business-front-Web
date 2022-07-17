@@ -79,7 +79,7 @@
             </ul>
           </div>
           <!-- 分页器:测试分页器阶段，这里数据将来需要替换的 -->
-          <Pagination :pageNo="30" :pageSize="3" :total="91" :continues="5" />
+          <Pagination :pageNo="1" :pageSize="3" :total="91" :continues="5" />
         </div>
       </div>
     </div>
