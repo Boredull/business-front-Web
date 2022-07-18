@@ -89,6 +89,7 @@
                     spuSaleAttrValue, index
                   ) in spuSaleAttr.spuSaleAttrValueList"
                   :key="spuSaleAttrValue.id"
+                  @click="changeActive(spuSaleAttrValue,spuSaleAttr.spuSaleAttrValueList)"
                 >
                   {{ spuSaleAttrValue.saleAttrValueName }}
                 </dd>
@@ -367,6 +368,17 @@ export default {
       return this.skuInfo.skuImageList || [];
     },
   },
+  methods: {
+    //产品的售卖属性值切换高亮
+    changeActive(saleAttrValue,arr) {
+      // 遍历全部售卖属性值isChecked为0，没有高亮了
+      arr.forEach(item=>{
+        item.isChecked = 0;
+      });
+      // 点击的那个售卖属性值
+      saleAttrValue.isChecked = 1;
+    }
+  }
 };
 </script>
 
