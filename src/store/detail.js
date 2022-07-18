@@ -16,7 +16,17 @@ const actions = {
     }
   },
 };
-const getters = {};
+// 简化数据而生
+const getters = {
+    categoryView(state) {
+        // 比如：state.goodInfo初始化状态空对象，空对象的categoryVie属性值undefined
+        // 当前计算出来的categoryView属性值至少是一个空对象，假的报错就不会有了
+        return state.goodInfo.categoryView || {};
+    },
+    skuInfo(state) {
+        return state.goodInfo.skuInfo || {};
+    }
+};
 export default {
   state,
   mutations,
