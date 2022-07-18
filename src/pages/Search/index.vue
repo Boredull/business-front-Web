@@ -79,7 +79,7 @@
             </ul>
           </div>
           <!-- 分页器:测试分页器阶段，这里数据将来需要替换的 -->
-          <Pagination :pageNo="1" :pageSize="3" :total="91" :continues="5" />
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo" />
         </div>
       </div>
     </div>
@@ -88,7 +88,7 @@
 
 <script>
 // import {mapState} from 'vuex';
-import { mapGetters } from 'vuex'
+import { mapGetters,mapState } from 'vuex'
   import SearchSelector from './SearchSelector/SearchSelector'
 import Pagination from '@/components/Pagination/index.vue';
   export default {
@@ -162,7 +162,11 @@ import Pagination from '@/components/Pagination/index.vue';
       },
       isDesc() {
         return this.searchParams.order.indexOf('desc') != -1
-      }
+      },
+      // 获取search模块展示产品一共多少数据
+      ...mapState({
+        total:state=>state.search.searchList.total
+      })
     },
     methods: {
       // 向服务器发请求获取search模块数据(根据参数不同返回不同的数据展示)
@@ -252,6 +256,13 @@ import Pagination from '@/components/Pagination/index.vue';
         this.searchParams.order = newOrder;
         // 再次发请求
         this.getData();
+      },
+      // 自定义事件的回调函数---获取当前第几页
+      getPageNo (pageNo){
+// 整理带给服务器的参数
+this.searchParams.pageNo= pageNo;
+// 再次发请求
+this.getData();
       }
     },
     // 数据监听：监听组件实例身上的属性的属性值变化
