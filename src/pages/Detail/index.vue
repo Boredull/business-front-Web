@@ -397,9 +397,15 @@ export default {
       }
     },
     // 加入购物车的回调函数
-    addShopcar(){
+  async addShopcar(){
       // 1：发请求----将产品加入到数据库（通知服务器）
-      this.$store.dispatch('addOrUpdateShopCart',{skuId:this.$route.params.skuid,skuNum:this.skuNum})
+      // 当前这里派发一个action,也向服务器发请求,判断加入购物车是成功还是失败了,进行了相应的操作.下面这行代码说白了:调用仓库中的addOrUpdateShopCart,这个方法加上async,返回的一定是一个Promise要么成功|要么失败
+      try{
+        await this.$store.dispatch('addOrUpdateShopCart',{skuId:this.$route.params.skuid,skuNum:this.skuNum})
+        // 路由跳转
+      } catch (error) {
+        alert(error.message);
+      }
       // 2：服务器存储成功 -----进行路由跳转传递参数
       // 3：失败，给用户进行提示
     }
