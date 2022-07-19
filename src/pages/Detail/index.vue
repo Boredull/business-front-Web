@@ -403,6 +403,7 @@ export default {
       try{
         await this.$store.dispatch('addOrUpdateShopCart',{skuId:this.$route.params.skuid,skuNum:this.skuNum})
         // 路由跳转
+        this.$router.push({name:'addcartsuccess'})
       } catch (error) {
         alert(error.message);
       }
