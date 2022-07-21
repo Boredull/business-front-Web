@@ -27,15 +27,26 @@
             <span class="price">{{ cart.skuPrice }}.00</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <a
+              href="javascript:void(0)"
+              class="mins"
+              @click="handler('minus', -1, cart)"
+              >-</a
+            >
             <input
               autocomplete="off"
               type="text"
               minnum="1"
               class="itxt"
               :value="cart.skuNum"
+              @change="handler('change', $event.target.value * 1, cart)"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a
+              href="javascript:void(0)"
+              class="plus"
+              @click="handler('add', 1, cart)"
+              >+</a
+            >
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ cart.skuPrice * cart.skuNum }}</span>
@@ -50,7 +61,7 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllCheck"/>
+        <input class="chooseAll" type="checkbox" :checked="isAllCheck" />
         <span>全选</span>
       </div>
       <div class="option">
@@ -84,6 +95,53 @@ export default {
     getData() {
       this.$store.dispatch("getCartList");
     },
+    // 修改某一个产品的个数
+    async handler(type, disNum, cart) {
+      // type:区分这3个元素
+      // 目前disNum形参：+变化量（1） -变化量（-1） input最终的个数（并不是变化量）
+      // cart:哪一个产品【身上有id】
+      // 向服务器发请求
+      switch (type) {
+        // 加号
+        case "add":
+          disNum = 1;
+          break;
+        case "minus":
+          // 判断产品的个数大于1，才可以传递给服务器-1
+          // 如果出现产品的个数小于等于1，传递给服务器的个数0（原封不动）
+          // if(cart.skuNum > 1){
+          //   disNum = -1;
+          // }else{
+          //   // 产品的个数小于等于1
+          //   disNum = 0;
+          // }
+          disNum = cart.skuNum > 1 ? -1 : 0;
+          break;
+          case "change":
+            // 用户输入进来的最终量，非法的（带有汉字）,带给服务器
+            // if(isNaN(disNum)||disNum < 1){
+            //   disNum = 0;
+            // }else{
+            //   // 属于正常情况（小数：取整），带给服务器变化的量 用户输入进来的 - 产品的起始个数
+            //   disNum = parseInt(disNum) - cart.skuNum;
+            // }
+            disNum = (isNaN(disNum)||disNum<1) ? 0: parseInt(disNum) -cart.skuNum;
+            break;
+      }
+      // 派发action
+      try{
+        // 代表的是修改成功
+        await this.$store.dispatch("addOrUpdateShopCart", {
+        skuId: cart.skuId,
+        skuNum: disNum,
+      });
+      // 再一次获取服务器最新的数据进行展示
+      this.getData();
+      } catch (error) {
+
+      }
+      
+    },
   },
   computed: {
     ...mapGetters(["cartList"]),
@@ -100,11 +158,11 @@ export default {
       return sum;
     },
     // 判断底部复选框是否勾选【全部产品都选中，才勾选】
-    isAllCheck(){
+    isAllCheck() {
       // 遍历数组里面原理，只要全部元素isChecked属性都为1===》真
       // 只要有一个不是1====>假的
-      return this.cartInfoList.every(item=>item.isChecked ==1)
-    }
+      return this.cartInfoList.every((item) => item.isChecked == 1);
+    },
   },
 };
 </script>
