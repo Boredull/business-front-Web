@@ -17,7 +17,12 @@
           :key="cart.id"
         >
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" :checked="cart.isChecked" />
+            <input
+              type="checkbox"
+              name="chk_list"
+              :checked="cart.isChecked"
+              @change="updateChecked(cart, $event)"
+            />
           </li>
           <li class="cart-list-con2">
             <img :src="cart.imgUrl" />
@@ -52,7 +57,9 @@
             <span class="sum">{{ cart.skuPrice * cart.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet" @click="deleteCartById(cart)">删除</a>
+            <a href="#none" class="sindelet" @click="deleteCartById(cart)"
+              >删除</a
+            >
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -96,8 +103,8 @@ export default {
     getData() {
       this.$store.dispatch("getCartList");
     },
-    // 修改某一个产品的个数
-    async handler(type, disNum, cart) {
+    // 修改某一个产品的个数[节流]
+    handler: throttle(async function (type, disNum, cart) {
       // type:区分这3个元素
       // 目前disNum形参：+变化量（1） -变化量（-1） input最终的个数（并不是变化量）
       // cart:哪一个产品【身上有id】
@@ -118,41 +125,52 @@ export default {
           // }
           disNum = cart.skuNum > 1 ? -1 : 0;
           break;
-          case "change":
-            // 用户输入进来的最终量，非法的（带有汉字）,带给服务器
-            // if(isNaN(disNum)||disNum < 1){
-            //   disNum = 0;
-            // }else{
-            //   // 属于正常情况（小数：取整），带给服务器变化的量 用户输入进来的 - 产品的起始个数
-            //   disNum = parseInt(disNum) - cart.skuNum;
-            // }
-            disNum = (isNaN(disNum)||disNum<1) ? 0: parseInt(disNum) -cart.skuNum;
-            break;
+        case "change":
+          // 用户输入进来的最终量，非法的（带有汉字）,带给服务器
+          // if(isNaN(disNum)||disNum < 1){
+          //   disNum = 0;
+          // }else{
+          //   // 属于正常情况（小数：取整），带给服务器变化的量 用户输入进来的 - 产品的起始个数
+          //   disNum = parseInt(disNum) - cart.skuNum;
+          // }
+          disNum =
+            isNaN(disNum) || disNum < 1 ? 0 : parseInt(disNum) - cart.skuNum;
+          break;
       }
       // 派发action
-      try{
+      try {
         // 代表的是修改成功
         await this.$store.dispatch("addOrUpdateShopCart", {
-        skuId: cart.skuId,
-        skuNum: disNum,
-      });
-      // 再一次获取服务器最新的数据进行展示
-      this.getData();
-      } catch (error) {
-
-      }
-      
-    },
+          skuId: cart.skuId,
+          skuNum: disNum,
+        });
+        // 再一次获取服务器最新的数据进行展示
+        this.getData();
+      } catch (error) {}
+    }, 500),
     // 删除某一个产品的操作
-   async deleteCartById(cart){
-      try{
+    async deleteCartById(cart) {
+      try {
         // 如果删除成功再次发请求获取新的数据进行展示
-       await this.$store.dispatch('deleteCartListBySkuId',cart.skuId);
-       this.getData();
-      } catch(error){
+        await this.$store.dispatch("deleteCartListBySkuId", cart.skuId);
+        this.getData();
+      } catch (error) {
         alert(error.message);
       }
-    }
+    },
+    // 修改某个产品的勾选状态
+    updateChecked(cart, event) {
+      // 带给服务器的参数isChecked,不是布尔值，应该是0|1
+      try {
+        // 如果修改数据成功，再次获取服务器数据（购物车）
+        let isChecked = event.target.checked ? "1" : "0";
+        this.$store.dispatch("updateCheckedById", {skuId:cart.skuId,isChecked});
+        this.getData();
+      } catch (error) {
+        // 如果失败提示一下
+        alert(error.message);
+      }
+    },
   },
   computed: {
     ...mapGetters(["cartList"]),
@@ -386,3 +404,5 @@ export default {
   }
 }
 </style>
+
+
