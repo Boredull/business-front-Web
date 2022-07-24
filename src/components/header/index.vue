@@ -5,10 +5,16 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <!-- 没有用户名：未登录 -->
+          <p v-if="!userName">
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link to="/register" class="register">免费注册</router-link>
+          </p>
+          <!--登陆了  -->
+          <p v-else>
+            <a>{{userName}}</a>
+            <a class="register">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -93,6 +99,12 @@ export default {
     this.$bus.$on("clear",()=>{
       this.keyword = '';
     })
+  },
+  computed:{
+    // 用户名信息
+    userName(){
+      return this.$store.state.user.userInfo.name;
+    }
   }
 };
 </script>
