@@ -14,7 +14,7 @@
           <!--登陆了  -->
           <p v-else>
             <a>{{userName}}</a>
-            <a class="register">退出登录</a>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -62,6 +62,7 @@ export default {
     }
   },
   methods:{
+    // 搜索按钮的事件处理函数，用于跳转到search路由组件当中
     goSearch(){
       // 路由传参三种形式
       // 第一种形式 字符串形式
@@ -91,6 +92,20 @@ export default {
         let location = {name:"search",params:{ keyword: this.keyword || undefined}};
         location.query = this.$route.query;
         this.$router.push(location);
+      }
+    },
+    // 退出登录
+   async logout(){
+      //退出登录需要做的事情
+      // 1:需要发请求，通知服务器退出登录【清楚一些数据：token】
+      // 2:清除项目当中的数据【userInfo、token】
+      try {
+        // 如果退出成功
+       await this.$store.dispatch('userLogout');
+      //  回到首页
+      this.$router.push('/home');
+      } catch (error) {
+        alert(error.message);
       }
     }
   },
