@@ -64,8 +64,14 @@ const actions = {
   // 获取用户信息
   async getUserInfo({ commit }) {
     let result = await reqUserInfo();
+    if(result.code == 200) {
       // 提交用户信息
       commit("GETUSERINFO", result.data);
+      return 'ok'
+    } else {
+      return Promise.reject(new Error('faile'));
+    }
+      
   },
 //   退出登录
  async userLogout({commit}){
