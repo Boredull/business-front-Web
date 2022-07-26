@@ -122,6 +122,11 @@
 <script>
   export default {
     name: 'Trade',
+    // 生命周期函数：挂载完毕
+    mounted(){
+      this.$store.dispatch('getUserAddress')
+      this.$store.dispatch('getOrderInfo')
+    }
   }
 </script>
 
