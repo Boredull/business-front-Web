@@ -12,6 +12,9 @@ Vue.component(Pagination.name,Pagination);
 import '@/mock/mockServe'
 // 引入swiper样式
 import "swiper/css/swiper.css"
+
+// 统一接口api文件夹里面全部请求函数
+import * as API from '@/api';
 Vue.config.productionTip = false
 // 引入路由
 import router from '@/router';
@@ -24,7 +27,9 @@ new Vue({
   render: h => h(App),
   // 配置全局事件总线
   beforeCreate() {
+    // 全局事件总线$bus配置
     Vue.prototype.$bus = this;
+    Vue.prototype.$API = API;
   },
   // 注册路由：底下的写法KV一致省略V【router小写的】
   // 注册路由信息：当这里书写router的时候，组件身上都拥有$route,$router属性
