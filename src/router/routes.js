@@ -1,4 +1,4 @@
-import Home from "@/pages/Home";
+// import Home from "@/pages/Home";
 import Search from "@/pages/Search";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -84,7 +84,8 @@ export default [
   },
   {
     path: "/home",
-    component: Home,
+    // 路由懒加载
+    component: ()=>import("@/pages/Home"),
     meta: { show: true },
   },
   {
