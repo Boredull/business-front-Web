@@ -44,6 +44,9 @@ import myPlugins from '@/plugins/myPlugins';
 
 Vue.use(myPlugins);
 
+// 引入表单校验插件
+import "@/plugins/validate";
+
 
 new Vue({
   render: (h) => h(App),
