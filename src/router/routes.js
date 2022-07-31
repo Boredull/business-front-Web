@@ -13,6 +13,9 @@ import Center from "@/pages/Center";
 import MyOrder from "@/pages/Center/myOrder";
 import GroupOrder from "@/pages/Center/groupOrder";
 // 路由配置信息
+
+// 当打包构建应用时，JavaScript包会变得非常大，影响页面加载
+// 如果我们能把不同路由对应得组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就更加高效了
 export default [
   {
     path: "/center",
